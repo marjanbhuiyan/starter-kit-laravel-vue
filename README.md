@@ -38,3 +38,20 @@ If vendor folder is missing:
 ```bash
 composer install
 ```
+
+## 6. Create .env file
+
+Create .env file the root project
+
+## 7. Generate all the file
+
+```bash
+php artisan key:generate
+```
+
+## 8. Generate all the file
+
+```bash
+php artisan serve
+npm run dev
+```
