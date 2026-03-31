@@ -37,4 +37,5 @@ If vendor folder is missing:
 
 ```bash
 composer install
+npm install
 ```
