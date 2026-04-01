@@ -37,6 +37,7 @@ If vendor folder is missing:
 
 ```bash
 composer install
+npm install
 ```
 
 ## 6. Create .env file
