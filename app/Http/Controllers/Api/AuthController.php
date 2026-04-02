@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -35,5 +39,71 @@ class AuthController extends Controller
             'token' => $token->plainTextToken,
             'token_type' => 'Bearer',
         ], 201);
+    }
+
+    /**
+     * Get current authenticated user
+     */
+    public function user(Request $request): JsonResponse
+    {
+        return response()->json([
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Logout (revoke current token)
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Successfully logged out',
+        ]);
+    }
+
+    /**
+     * Logout all sessions (revoke all tokens)
+     */
+    public function logoutAll(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Successfully logged out from all sessions',
+        ]);
+    }
+
+    /**
+     * List all tokens
+     */
+    public function tokens(Request $request): JsonResponse
+    {
+        $tokens = $request->user()->tokens()->get();
+
+        return response()->json([
+            'tokens' => $tokens,
+        ]);
+    }
+
+    /**
+     * Revoke specific token
+     */
+    public function revokeToken(Request $request, string $tokenId): JsonResponse
+    {
+        $token = PersonalAccessToken::findToken($tokenId);
+
+        if (!$token || $token->tokenable_id !== $request->user()->id) {
+            return response()->json([
+                'message' => 'Token not found',
+            ], 404);
+        }
+
+        $token->delete();
+
+        return response()->json([
+            'message' => 'Token revoked successfully',
+        ]);
     }
 }
