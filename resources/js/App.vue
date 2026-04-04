@@ -1,6 +1,11 @@
 <template>
-    <div class="container">
-        <h1 class="text-3xl font-bold underline">Hello world!</h1>
-    </div>
+  <router-view />
 </template>
-<script setup></script>
+
+<script setup>
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  console.log('App mounted');
+});
+</script>

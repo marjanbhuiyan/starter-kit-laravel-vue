@@ -31,9 +31,3 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
     Route::delete('/tokens/{tokenId}', [AuthController::class, 'revokeToken'])
         ->name('api.auth.revoke-token');
 });
-
-// Your protected API resources go here
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::apiResource('posts', PostController::class);
-//     Route::apiResource('comments', CommentController::class);
-// });

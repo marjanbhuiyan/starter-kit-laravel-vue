@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-<h1>
-    Welcome to Laravel!
-</h1>
-=======
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,4 +11,4 @@
     <div id="app"></div>
 </body>
 </html>
->>>>>>> bba331c3536eca9a46592aab0a2f3f5569db968d
+
