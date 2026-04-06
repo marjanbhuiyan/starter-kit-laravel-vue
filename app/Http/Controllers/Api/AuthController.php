@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends Controller
 {
@@ -27,36 +30,36 @@ class AuthController extends Controller
             'password.string' => 'Password must be a valid text',
             'password.min' => 'Password must be at least 8 characters',
             'password.confirmed' => 'Password confirmation does not match',
-            'device_name.required' => 'Device name is required',
-            'device_name.string' => 'Device name must be a valid text',
-            'device_name.max' => 'Device name cannot exceed 255 characters',
         ];
 
-        // Validate registration data
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'device_name' => ['required', 'string', 'max:255'],
         ], $messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()->all(),
+            ], 422);
+        }
 
         // Create the user with hashed password
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
         ]);
 
         // Create token with specific abilities
-        $token = $user->createToken(
-            $validated['device_name'],
-            ['*'] // All abilities - customize as needed
-        );
+        $token = $user->createToken('auth_token')->plainTextToken;
 
+      
         return response()->json([
             'message' => 'Registration successful',
             'user' => $user,
-            'token' => $token->plainTextToken,
+            'token' => $token,
             'token_type' => 'Bearer',
         ], 201);
     }
