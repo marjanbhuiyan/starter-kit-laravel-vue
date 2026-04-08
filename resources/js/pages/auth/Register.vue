@@ -110,6 +110,8 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { register } from '@/services/auth.js';
+
 
 const router = useRouter();
 
@@ -118,7 +120,6 @@ const form = reactive({
   email: '',
   password: '',
   password_confirmation: '',
-  device_name: 'Web Browser'
 });
 
 const loading = ref(false);
@@ -129,16 +130,11 @@ const handleRegister = async () => {
   errors.value = [];
 
   try {
-    console.log('Registration attempt:', form.email);
-    
-    // TODO: Implement actual API call to backend
-    // const response = await axios.post('/api/auth/register', form);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, redirect to dashboard
-    router.push('/dashboard');
+    const response = await register(form.name, form.email, form.password, form.password_confirmation);
+    if (response.user) {
+      router.push('/dashboard');
+    }
+   
   } catch (err) {
     if (err.response?.data?.errors) {
       // Handle validation errors

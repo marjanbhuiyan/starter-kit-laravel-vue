@@ -20,6 +20,7 @@ const router = createRouter({
   routes,
 });
 
+
 // Navigation guard for route meta titles
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title || 'Laravel Vue App';
